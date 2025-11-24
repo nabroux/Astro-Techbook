@@ -1,0 +1,38 @@
+{
+  "site": {
+    "title": "Astro Techbook",
+    "subtitle": "your Obsidian vault, published.",
+    "social": {
+      "github": "https://github.com/",
+      "linkedin": "https://www.linkedin.com/",
+      "email": "example@gmail.com"
+    },
+    "basePath": "/",
+    "defaultLang": "zh"
+  },
+  "content": {
+    "root": "notes",
+    "hiddenPaths": [
+      "00-inbox/**",
+      "99-private/**",
+      ".obsidian/**"
+    ],
+    "hiddenFiles": [
+      "README.md"
+    ],
+    "defaultPublish": true
+  },
+  "i18n": {
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "fallbacks": {
+      "en": "zh",
+      "zh": "en"
+    },
+    "fileStrategy": "paired",
+    "langField": "lang",
+    "translationKeyField": "translationKey"
+  }
+}
