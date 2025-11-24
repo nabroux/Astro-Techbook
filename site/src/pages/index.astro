@@ -1,0 +1,6 @@
+---
+import { loadConfig } from '../lib/config';
+
+const config = await loadConfig();
+return Astro.redirect(`/${config.site.defaultLang}`);
+---

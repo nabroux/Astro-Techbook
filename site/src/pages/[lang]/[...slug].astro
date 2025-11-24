@@ -1,0 +1,104 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import {
+  buildNavTree,
+  getNoteBySlugAndLang,
+  getNotePath,
+  groupNotesByTranslationKey,
+  loadNotes,
+  renderMarkdown
+} from '../../lib/notesLoader';
+import { loadConfig } from '../../lib/config';
+import { normalizeLang, uiStrings } from '../../lib/i18n';
+import type { NoteLang } from '../../types';
+
+export async function getStaticPaths() {
+  const notes = await loadNotes();
+
+  return notes.map((note) => ({
+    params: {
+      lang: note.lang,
+      slug: getNotePath(note)
+    }
+  }));
+}
+
+const slugParam = Astro.params.slug;
+const slugPath = Array.isArray(slugParam)
+  ? slugParam.filter(Boolean).join('/')
+  : String(slugParam ?? '');
+
+const config = await loadConfig();
+const lang = normalizeLang(Astro.params.lang, config);
+const nav = await buildNavTree(lang);
+const note = await getNoteBySlugAndLang(lang, slugPath);
+
+if (!note) {
+  return new Response('Not found', { status: 404 });
+}
+
+const contentHtml = renderMarkdown(note);
+const group = (await groupNotesByTranslationKey()).find(
+  (item) => item.translationKey === note.translationKey
+);
+const strings = uiStrings[lang as NoteLang];
+
+const availableLangs = group
+  ? (Object.entries(group.notesByLang) as [NoteLang, typeof note | undefined][])
+      .filter(([, target]) => Boolean(target))
+  : [];
+
+const langOptions =
+  availableLangs.length > 0
+    ? availableLangs.map(([code, target]) => ({
+        lang: code,
+        href: target ? `/${code}/${getNotePath(target)}` : undefined
+      }))
+    : [
+        {
+          lang: note.lang,
+          href: `/${note.lang}/${getNotePath(note)}`
+        }
+      ];
+
+const hasAlternate = availableLangs.some(
+  ([code, target]) => target && code !== lang
+);
+---
+<MainLayout
+  lang={lang}
+  nav={nav}
+  siteTitle={config.site.title}
+  siteSubtitle={config.site.subtitle}
+  social={config.site.social}
+  langOptions={langOptions}
+  currentPath={`/${lang}/${getNotePath(note)}`}
+>
+  <article class="space-y-6 text-slate-100">
+    <header class="space-y-3 border-b border-surface-700/70 pb-4">
+      <h1 class="text-3xl font-semibold text-white">{note.title}</h1>
+      <p class="text-xs uppercase tracking-[0.18em] text-slate-400">
+        {note.dirPath || 'root'} · {note.lang.toUpperCase()}
+      </p>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-surface-700 px-3 py-1 text-xs text-slate-200">
+          translationKey: {note.translationKey}
+        </span>
+        {note.tags &&
+          note.tags.map((tag) => (
+            <span class="rounded-full bg-surface-700 px-3 py-1 text-xs text-slate-200">
+              #{tag}
+            </span>
+          ))}
+      </div>
+    </header>
+
+    <div class="prose prose-invert max-w-none" set:html={contentHtml}></div>
+
+    {!hasAlternate && (
+      <div class="rounded-xl border border-surface-700/70 bg-surface-800/70 px-4 py-3 text-sm text-slate-300">
+        {strings.noTranslation}
+      </div>
+    )}
+  </article>
+</MainLayout>

@@ -1,0 +1,65 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { buildNavTree, getGroupByTranslationKey, getNotePath, renderMarkdown } from '../../lib/notesLoader';
+import { loadConfig } from '../../lib/config';
+import { getFallbackLang, normalizeLang, uiStrings } from '../../lib/i18n';
+import type { NoteLang } from '../../types';
+
+export async function getStaticPaths() {
+  const config = await loadConfig();
+  return config.i18n.languages.map((lang) => ({
+    params: { lang }
+  }));
+}
+
+const config = await loadConfig();
+const lang = normalizeLang(Astro.params.lang, config);
+const nav = await buildNavTree(lang);
+const strings = uiStrings[lang as NoteLang];
+const homepageGroup = await getGroupByTranslationKey('homepage');
+const homepageNote =
+  homepageGroup?.notesByLang[lang as NoteLang] ??
+  (getFallbackLang(lang, config)
+    ? homepageGroup?.notesByLang[getFallbackLang(lang, config) as NoteLang]
+    : undefined);
+const homepageHtml = homepageNote ? renderMarkdown(homepageNote) : null;
+
+const availableLangs = homepageGroup
+  ? (Object.entries(homepageGroup.notesByLang) as [NoteLang, typeof homepageNote][])
+      .filter(([, note]) => Boolean(note))
+  : [];
+
+const langOptions =
+  availableLangs.length > 0
+    ? availableLangs.map(([code, target]) => ({
+        lang: code,
+        href: target ? `/${code}/${getNotePath(target)}` : undefined
+      }))
+    : [
+        {
+          lang,
+          href: homepageNote ? `/${lang}/${getNotePath(homepageNote)}` : undefined
+        }
+      ];
+---
+<MainLayout
+  lang={lang}
+  nav={nav}
+  siteTitle={config.site.title}
+  siteSubtitle={config.site.subtitle}
+  social={config.site.social}
+  langOptions={langOptions}
+  currentPath={`/${lang}`}
+>
+  {homepageNote ? (
+    <article class="space-y-4 text-slate-100">
+      <header class="border-b border-surface-700/70 pb-3">
+      </header>
+      <div class="prose prose-invert max-w-none" set:html={homepageHtml}></div>
+    </article>
+  ) : (
+    <div class="rounded-xl border border-surface-700/70 bg-surface-800/70 px-4 py-3 text-sm text-slate-300">
+      {strings.noTranslation}
+    </div>
+  )}
+</MainLayout>
