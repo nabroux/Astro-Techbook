@@ -1,0 +1,27 @@
+.DS_Store
+node_modules
+dist
+.env
+.env.local
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+.astro
+.vscode
+.idea
+coverage
+.turbo
+site/node_modules
+site/dist
+site/.astro
+site/.vercel
+site/.netlify
+site/.turbo
+site/public/notes-assets
+
+# Ignore any file or folder with 'todo' in the name
+*todo*
+
+# Local editor/project noise
+.obsidian
