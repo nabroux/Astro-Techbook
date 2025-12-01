@@ -2,7 +2,7 @@
 title: Array
 lang: zh
 translationKey: array
-published: false
+published: true
 tags:
   - dsa
   - data structure

@@ -2,7 +2,7 @@
 title: "Binary Search"
 lang: "zh"
 translationKey: "binary-search"
-published: false
+published: true
 tags: ["dsa", "algorithm", "searching"]
 ---
 # Binary Search（二分搜尋）

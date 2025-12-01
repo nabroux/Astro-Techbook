@@ -2,7 +2,7 @@
 title: "Linear Search"
 lang: "zh"
 translationKey: "linear-search"
-published: false
+published: true
 tags: ["dsa", "algorithm", "searching"]
 ---
 # Linear Search（線性搜尋）
