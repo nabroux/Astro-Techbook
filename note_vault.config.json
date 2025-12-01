@@ -1,11 +1,11 @@
 {
   "site": {
     "title": "Astro Techbook",
-    "subtitle": "your Obsidian vault, published.",
+    "subtitle": "nabroux's Obsidian vault, published.",
     "social": {
-      "github": "https://github.com/",
-      "linkedin": "https://www.linkedin.com/",
-      "email": "example@gmail.com"
+      "github": "https://github.com/nabroux",
+      "linkedin": "https://www.linkedin.com/in/nabroux/",
+      "email": "123nabroux@gmail.com"
     },
     "basePath": "/",
     "defaultLang": "zh"
