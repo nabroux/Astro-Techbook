@@ -1,9 +1,12 @@
 ---
-title: "Two Sum"
-lang: "zh"
-translationKey: "two-sum"
+title: Two Sum
+lang: zh
+translationKey: two-sum
 published: true
-tags: ["dsa", " example"]
+tags:
+  - dsa
+  - example
+  - hashmap
 ---
 # Two Sum
 
