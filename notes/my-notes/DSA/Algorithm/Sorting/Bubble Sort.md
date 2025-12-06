@@ -2,7 +2,7 @@
 title: "Bubble Sort"
 lang: "zh"
 translationKey: "bubble-sort"
-published: false
+published: true
 tags: ["todo dsa", "algorithm", "sorting"]
 ---
 # Bubble Sort（氣泡排序）
